@@ -1,6 +1,9 @@
 @include('layout.header')
-<body class="bg-gray-100">
+@include('layout.navbar')
 @yield ('content')
+@include('layout.footer')
 
-</body>
-</html>
+
+
+
+
