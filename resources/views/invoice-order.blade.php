@@ -69,41 +69,41 @@
 
     <div class="mr-20"></div>
 
-    <!-- Main Content -->
-    <div class="flex-1 bg-white p-6 rounded-md shadow-md">
-        <div>
-            <!-- Profile Header -->
-            <div class="flex items-center space-x-6 mb-8">
-                <div class="w-36 h-36 bg-gray-300 rounded-full"></div>
-                <input type="file" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700"></input>
-            </div>
-
-            <!-- Profile Info -->
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <p>Email</p>
-                <p class="font-medium text-gray-700">: bambangpratamaph@gmail.com</p>
-                <p>Nama</p>
-                <p class="font-medium text-gray-700">: Bambang Pratama Putra Hadi</p>
-                <p>Tanggal Lahir</p>
-                <p class="font-medium text-gray-700">: 18/03/2000</p>
-                <p>Nomor HP</p>
-                <p class="font-medium text-gray-700">: 0822-53xx-xx99</p>
-                <p>Jenis Kelamin</p>
-                <p class="font-medium text-gray-700">: Laki-laki</p>
-            </div>
-
-            <!-- Change Password Section -->
-            <div class="mt-6">
-                <label class="block mb-2 text-sm font-medium text-gray-700">Change Password</label>
-                <input type="password" class="w-full p-2 border border-gray-300 rounded-md" placeholder="**********">
-            </div>
+    <!-- Main Content (Invoice) -->
+    <div class="w-full bg-white shadow-lg rounded-md p-6">
+        <div class="mb-4">
+            <div class="text-3xl font-bold text-blue-500">Invoice</div>
+            <div class="text-xs text-gray-500">Order Id: 0123104121420528209</div>
         </div>
+        <div class="border-b border-gray-300 mb-6"></div>
 
-
-        <!-- Action Buttons -->
-        <div class="mt-6 flex space-x-4">
-            <button class=" bg-blue-600 text-white px-6 py-2 rounded-md">Save</button>
-            <button class=" bg-red-600 text-white px-6 py-2 rounded-md">Sign Out</button>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Nama</p>
+            <p>Bambang Pratama Putra Hadi</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Jenis Kelas</p>
+            <p>KeyChain</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Tanggal Kegiatan</p>
+            <p>Kamis, 18 Maret 2025</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Total Pembayaran</p>
+            <p>Rp65.000</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Kode Unik</p>
+            <p>xx1230xx</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">ID Produk</p>
+            <p>xxx-089-xx</p>
+        </div>
+        <div class="mb-3">
+            <p class="text-lg font-semibold">Waktu Pembayaran</p>
+            <p>Kamis, 18 Maret 2025 Pukul 18:00 WIB</p>
         </div>
     </div>
 </div>
