@@ -84,9 +84,9 @@
 
         <!-- Main Content (Invoice) -->
         <div class="w-full bg-white shadow-lg rounded-md p-6">
-            <h1 class="text-2xl font-extrabold text-[#222222] text-center">Riwayat Transaksi</h1>
+            <h1 class="text-2xl font-extrabold text-[#222222] text-center">Riwayat Reservasi</h1>
             <div class="border-b border-gray-300 my-5"></div>
-            @foreach ($checkouts as $checkout)
+            @foreach ($reservasis as $reservasi)
                 <div class="flex justify-between items-center gap-10">
 
                     <div class="mb-4 flex items-center">
@@ -97,17 +97,15 @@
                         </svg>
 
                         <div>
-                            <p class="font-bold text-black">{{ $checkout->event->nama }}</p>
-                            <p class="text-[0.6rem] font-bold text-[#83A2FF]">Order Id: {{ $checkout->id }}
-                            </p>
-                            <p class="text-[0.6rem] font-bold text-[#83A2FF]">Status : {{ $checkout->status }}
-                            </p>
-                            <p class="text-[0.8rem] text-black">{{ $checkout->updated_at }}</p>
+                            <p class="font-bold text-black">{{ $reservasi->aktivitas->nama }}</p>
+                            <p class="text-[0.6rem] font-bold text-[#83A2FF]">Order Id: {{ $reservasi->id }} -
+                                {{ $reservasi->status }}</p>
+                            <p class="text-[0.8rem] text-black">{{ $reservasi->updated_at }}</p>
                         </div>
                     </div>
 
                     <!-- Tombol Read More dengan ukuran sesuai -->
-                    <a href="{{ route('checkout.show', ['id' => $checkout->id]) }}"
+                    <a href="{{ route('reservasi.show', ['id' => $reservasi->id]) }}"
                         class="bg-blue-700 text-white px-6 py-2 rounded-md hover:bg-blue-800 h-fit">
                         read more
                     </a>

@@ -1,6 +1,6 @@
 @extends('layout.master')
 @section('content')
-    <!-- Sidebar Mobile -->
+    <!-- sidebar mobile -->
     <div id="accordion-collapse" data-accordion="collapse" class="lg:hidden bg-white">
         <h2 id="accordion-collapse-heading-1">
             <button type="button"
@@ -84,41 +84,115 @@
 
         <!-- Main Content (Invoice) -->
         <div class="w-full bg-white shadow-lg rounded-md p-6">
-            <h1 class="text-2xl font-extrabold text-[#222222] text-center">Riwayat Transaksi</h1>
-            <div class="border-b border-gray-300 my-5"></div>
-            @foreach ($checkouts as $checkout)
-                <div class="flex justify-between items-center gap-10">
+            <div class="mb-4">
+                <div class="text-3xl font-bold text-blue-500">Invoice Reservasi</div>
+                <div class="text-xs text-gray-500">Order Id: {{ $reservasi->id }}</div>
+                <div class="text-xs text-gray-500">Status: {{ $reservasi->status }}</div>
+            </div>
+            <div class="border-b border-gray-300 mb-6"></div>
 
-                    <div class="mb-4 flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 mr-3" viewBox="0 0 384 512">
-                            <!-- Font Awesome Free 6.7.2 -->
-                            <path fill="#83A2FF"
-                                d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128z" />
-                        </svg>
+            <div class="mb-3">
+                <p class="text-lg font-semibold">Nama Lengkap</p>
+                <p>{{ $reservasi->pelanggan->nama }}</p>
+            </div>
+            <div class="mb-3">
+                <p class="text-lg font-semibold">Nama Aktivitas</p>
+                <p>Reservasi {{ $reservasi->aktivitas->nama }}</p>
+            </div>
+            <div class="mb-3">
+                <p class="text-lg font-semibold">Waktu Mulai dan Selesai</p>
+                <p>{{ $reservasi->waktu_kedatangan }} - {{ $reservasi->waktu_selesai }}</p>
+            </div>
+            <div class="mb-3">
+                <p class="text-lg font-semibold">Total Pembayaran</p>
+                <p> Rp{{ number_format($reservasi->total, 0, ',', '.') }}</p>
+            </div>
+            <div class="mb-3">
+                <p class="text-lg font-semibold">DP Booking</p>
+                <p> Rp{{ number_format($reservasi->dp, 0, ',', '.') }}</p>
+            </div>
+            @if ($reservasi->status === 'booking')
+                <div class="mb-3">
+                    <p class="text-lg font-semibold">Sisa Pembayaran</p>
+                    @php
+                        $sisa = $reservasi->total - $reservasi->dp;
+                    @endphp
+                    <p> Rp{{ number_format($sisa, 0, ',', '.') }}</p>
 
-                        <div>
-                            <p class="font-bold text-black">{{ $checkout->event->nama }}</p>
-                            <p class="text-[0.6rem] font-bold text-[#83A2FF]">Order Id: {{ $checkout->id }}
-                            </p>
-                            <p class="text-[0.6rem] font-bold text-[#83A2FF]">Status : {{ $checkout->status }}
-                            </p>
-                            <p class="text-[0.8rem] text-black">{{ $checkout->updated_at }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Tombol Read More dengan ukuran sesuai -->
-                    <a href="{{ route('checkout.show', ['id' => $checkout->id]) }}"
-                        class="bg-blue-700 text-white px-6 py-2 rounded-md hover:bg-blue-800 h-fit">
-                        read more
-                    </a>
                 </div>
-
-                <div class="border-b border-gray-300 mb-6"></div>
-            @endforeach
-
-
-
-
+            @endif
+            <div class="mb-3">
+                <p class="text-lg font-semibold">Waktu Pembayaran</p>
+                @if ($reservasi->status === 'pending')
+                    <p>-</p>
+                @else
+                    <p>{{ $reservasi->updated_at }}</p>
+                @endif
+            </div>
+            <div class="mb-3">
+                @if ($reservasi->status === 'pending')
+                    <button id="pay-button" class="bg-blue-700 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-800">
+                        Bayar
+                    </button>
+                @endif
+            </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
+    </script>
+    <script type="text/javascript">
+        document.getElementById('pay-button').onclick = function() {
+            // SnapToken acquired from previous step
+            snap.pay('{{ $reservasi->snap_token }}', {
+                // Optional
+                onSuccess: function(result) {
+                    /* You may add your own js here, this is just example */
+                    window.location.href = '{{ route('reservasi.booking', $reservasi->id) }}';
+                },
+                onPending: function(result) {
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                },
+                onError: function(result) {
+                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                }
+            });
+        };
+    </script>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Auto close setelah 3 detik
+            });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            // Ambil semua error
+            let errorMessages =
+                `@foreach ($errors->all() as $error) {{ $error }}\n @endforeach`;
+
+            // Tampilkan semua error menggunakan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: errorMessages,
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true
+            });
+        </script>
+    @endif
 @endsection

@@ -15,22 +15,27 @@
 
             <!-- Bagian Logo -->
             <div class="w-1/2 lg:flex justify-center items-center border-r border-gray hidden ">
-                <img src="{{asset('img/logoKS.png')}}" alt="Logo" class="w-64">
+                <img src="{{ asset('img/logoKS.png') }}" alt="Logo" class="w-64">
             </div>
 
             <!-- Garis Pembatas dengan Tinggi 2/3 -->
             <div class="w-[1px] bg-white-100"></div> <!-- Tinggi garis 2/3 dari kontainer -->
 
             <!-- Bagian Form -->
-            <div class="lg:w-1/2 p-8 flex flex-col justify-center items-start space-y-4">
+
+            <form action="{{ route('post-login') }}" method="post"
+                class="lg:w-1/2 p-8 flex flex-col justify-center items-start space-y-4">
+                @csrf
+                @method('POST')
                 <h3 class="text-xl font-bold text-[#FFFFFF]">Silahkan Masuk Untuk Melanjutkan</h3>
 
-                <input type="email" placeholder="Email"
+                <input type="email" placeholder="Email" name="email"
                     class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <input type="password" placeholder="Password"
+                <input type="password" placeholder="Password" name="password"
                     class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
 
-                <button class="w-full py-3 bg-white text-black font-semibold rounded-md hover:bg-gray-100">
+                <button type="submit"
+                    class="w-full py-3 bg-white text-black font-semibold rounded-md hover:bg-gray-100">
                     LOGIN
                 </button>
 
@@ -38,10 +43,30 @@
                     DAFTAR
                 </button>
 
-                <a href="#" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali Kehalaman Sebelumnya</a>
-            </div>
+                <a href="#" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali Kehalaman
+                    Sebelumnya</a>
+            </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if ($errors->any())
+        <script>
+            let errorMessages = "<ul>";
+            @foreach ($errors->all() as $error)
+                errorMessages += "<li>{{ $error }}</li>";
+            @endforeach
+            errorMessages += "</ul>";
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal!',
+                html: errorMessages, // Menggunakan `html` untuk tampilan list
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 </body>
 
 </html>
