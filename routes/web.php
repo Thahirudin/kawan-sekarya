@@ -40,10 +40,12 @@ Route::middleware([AdministratorMiddleware::class])->prefix('administrator')->gr
     Route::get('/data-pegawai', [PageController::class, 'administratorDataPegawai'])->name('adminaDataPegawai');
     Route::get('/data-event', [PageController::class, 'administratorDataEvent'])->name('adminDataEvent');
     Route::get('/checkout-event', [PageController::class, 'administratorCheckoutEvent'])->name('adminCheckoutEvent');
-    Route::get('/tambah-event', function () {return view('admin.tambah-event');})->name('admin.tambah-event');
+    Route::get('/tambah-event', function () {
+        return view('admin.tambah-event');
+    })->name('admin.tambah-event');
     Route::post('/store-event', [EventController::class, 'adminStoreEvent'])->name('admin.store-event');
     Route::get('/event/edit/{id}', [EventController::class, 'administratorEdit'])->name('admin.edit-event');
-Route::post('/event/update/{id}', [EventController::class, 'administratorUpdate'])->name('admin.update-event');
+    Route::post('/event/update/{id}', [EventController::class, 'administratorUpdate'])->name('admin.update-event');
 
 });
 Route::middleware([PelangganMiddleware::class])->group(function () {
@@ -70,4 +72,6 @@ Route::get('/event/{slug}', [PageController::class, 'eventDetail'])->name('event
 Route::get('/reservasi', [PageController::class, 'reservasi'])->name('reservasi');
 Route::get('/jadwal-reservasi/{id}', [PageController::class, 'reservasiJadwal'])->name('reservasi-jadwal');
 Route::get('/tambah-reservasi/{id}', [PageController::class, 'tambahReservasi'])->name('tambah-reservasi');
+Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about-us');
+
 

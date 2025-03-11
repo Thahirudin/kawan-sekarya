@@ -34,8 +34,8 @@ class PageController extends Controller
     public function dataCheckout()
     {
         $checkouts = Checkout::where('pelanggan_id', Auth::guard('pelanggan')->user()->id)
-                     ->orderBy('created_at', 'desc')
-                     ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('order-history', compact('checkouts'));
     }
     public function reservasiHistrory()
@@ -52,6 +52,10 @@ class PageController extends Controller
     {
         $reservasis = Reservasi::where('meja_id', $id)->where('status', 'booking')->get();
         return view('reservasi-jadwal', compact('reservasis', 'id'));
+    }
+    public function aboutUs()
+    {
+        return view('about-us');
     }
     public function tambahReservasi($id)
     {
