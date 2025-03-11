@@ -15,7 +15,7 @@
                         Event Lainnya</a>
                 </div>
             </div>
-            <div class="md:flex justify-center items-center md:pt-20 lg:p-10 hidden"">
+            <div class="md:flex justify-end items-center md:pt-20 lg:p-7 hidden"">
                 <img src="{{ asset('img/ayangAku.png') }}" alt="kawansekarya" class="w-[90%] lg:w-[70%] h-auto">
             </div>
         </div>
