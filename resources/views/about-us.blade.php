@@ -91,7 +91,7 @@
     <section class="lg:max-w-screen-xl mx-auto px-4 py-10">
         <h2 class="text-2xl font-bold text-[#222222] text-center mb-10">Lokasi <span class="text-[#3B82F6]">Kawan Sekarya</span></h2>
         <div class="mt-4">
-            <div id='map' class="h-[600px] w-[100%] z-0"></div>
+            <div id='map' class="h-[600px] w-[100%] rounded-lg shadow-lg z-0"></div>
             {{-- <iframe class="w-full h-96 rounded" src="https://www.google.com/maps/embed?pb=!1m18..." allowfullscreen=""></iframe> --}}
         </div>
     </section> 
