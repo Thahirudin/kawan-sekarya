@@ -138,4 +138,18 @@ class CheckoutController extends Controller
                 ->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
         }
     }
+    public function cancelStatus($id)
+    {
+        try {
+            $checkout = Checkout::findOrFail($id);
+            if (!Auth::guard('pelanggan')->check()) {
+                return redirect()->route('login');
+            }
+            $checkout->status = 'cancelled';
+            $checkout->save();
+            return redirect()->back()->with('success', 'Order berhasil dibatalkan');
+        } catch (\Exception $e) {
+            return redirect()->route('checkout.show', ['id' => $checkout->id])->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
+        }
+    }
 }

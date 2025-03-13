@@ -51,6 +51,7 @@ Route::middleware([PelangganMiddleware::class])->group(function () {
     Route::get('/invoice-checkout/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
     Route::get('/paid-checkout', [CheckoutController::class, 'updateStatus'])->name('checkout.success');
     Route::get('/failed-checkout', [CheckoutController::class, 'failedStatus'])->name('checkout.failed');
+    Route::put('/cancelled-checkout/{id}', [CheckoutController::class, 'cancelStatus'])->name('checkout.cancel');
     Route::get('/checkout-history', [PageController::class, 'dataCheckout'])->name('checkout.history');
     Route::get('/reservasi-history', [PageController::class, 'reservasiHistrory'])->name('reservasi.history');
     Route::post('/store-reservasi', [ReservasiController::class, 'storeReservasi'])->name('store-reservasi');

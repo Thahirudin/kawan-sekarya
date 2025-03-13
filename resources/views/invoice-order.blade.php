@@ -102,7 +102,8 @@
             </div>
             <div class="mb-3">
                 <p class="text-lg font-semibold">Tanggal Kegiatan</p>
-                <p>{{ \Carbon\Carbon::parse($checkout->event->tanggal_mulai)->isoFormat('D MMMM YYYY HH:mm') }} - {{ \Carbon\Carbon::parse($checkout->event->tanggal_selesai)->isoFormat('D MMMM YYYY HH:mm') }}</p>
+                <p>{{ \Carbon\Carbon::parse($checkout->event->tanggal_mulai)->isoFormat('D MMMM YYYY HH:mm') }} -
+                    {{ \Carbon\Carbon::parse($checkout->event->tanggal_selesai)->isoFormat('D MMMM YYYY HH:mm') }}</p>
 
             </div>
             <div class="mb-3">
@@ -117,18 +118,27 @@
                     <p>{{ $checkout->updated_at }}</p>
                 @endif
             </div>
-            <div class="mb-3">
+            <div class="mb-3 flex gap-5">
                 @if ($checkout->status === 'pending')
                     <button id="pay-button" class="bg-blue-700 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-800">
                         Bayar
                     </button>
+                    <form action="{{ route('checkout.cancel', ['id' => $checkout->id]) }}" method="post">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="bg-red-700 text-white font-bold py-2 px-6 rounded-md hover:bg-red-800">
+                            Batal
+                        </button>
+                    </form>
                 @endif
+
             </div>
         </div>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}">
+    </script>
     <script type="text/javascript">
         document.getElementById('pay-button').onclick = function() {
             // SnapToken acquired from previous step
@@ -136,17 +146,20 @@
                 // Optional
                 onSuccess: function(result) {
                     /* You may add your own js here, this is just example */
-                    window.location.href = '{{ route('checkout.success'). "/?order_id=". $checkout->id }}';
+                    window.location.href =
+                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
                 },
                 // Optional
                 onPending: function(result) {
                     /* You may add your own js here, this is just example */
-                    window.location.href = '{{ route('checkout.success'). "/?order_id=". $checkout->id }}';
+                    window.location.href =
+                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
                 },
                 // Optional
                 onError: function(result) {
                     /* You may add your own js here, this is just example */
-                    window.location.href = '{{ route('checkout.success'). "/?order_id=". $checkout->id }}';
+                    window.location.href =
+                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
                 }
             });
         };

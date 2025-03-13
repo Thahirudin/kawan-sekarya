@@ -50,8 +50,9 @@ class PageController extends Controller
     }
     public function reservasiJadwal($id)
     {
+        $aktivitass = Aktivitas::all();
         $reservasis = Reservasi::where('meja_id', $id)->where('status', 'booking')->get();
-        return view('reservasi-jadwal', compact('reservasis', 'id'));
+        return view('reservasi-jadwal', compact('reservasis', 'id', 'aktivitass'));
     }
     public function tambahReservasi($id)
     {
