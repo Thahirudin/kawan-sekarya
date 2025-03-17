@@ -1,4 +1,7 @@
 @extends('layout.master')
+@section('nav-home')
+    text-blue-700
+@endsection
 @section('content')
     <section style="background-image: url('{{ asset('img/background.png') }}');"
         class="bg-cover bg-center rounded-b-[2rem] w-full">
@@ -13,7 +16,7 @@
                     <a href="{{ route('reservasi') }}"
                         class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Mulai
                         Reservasi</a>
-                    <a href="#"
+                    <a href="{{ route('event') }}"
                         class="block py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-blue-600 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cari
                         Event Lainnya</a>
                 </div>
@@ -30,17 +33,19 @@
                 <div
                     class=" h-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                     <div class="h-[150px] lg:h-[250px] bg-contain rounded-t-lg w-full">
-                        <img class="rounded-t-lg w-full h-full object-cover"
-                            src="{{ asset($event->gambar) }}"
+                        <img class="rounded-t-lg w-full h-full object-cover" src="{{ asset($event->gambar) }}"
                             alt="{{ $event->nama }}" />
                     </div>
                     <div class="p-5">
-                        <a href="{{ route('event.detail',['slug' => $event->slug]) }}" class="">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-800 ease-in-out duration-700">
+                        <a href="{{ route('event.detail', ['slug' => $event->slug]) }}" class="">
+                            <h5
+                                class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-blue-800 ease-in-out duration-700">
                                 {{ $event->nama }}</h5>
                         </a>
-                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ $event->tanggal_mulai }}</p>
-                        <a href="{{ route('event.detail',['slug' => $event->slug]) }}"
+                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                            {{ \Carbon\Carbon::parse($event->tanggal_mulai)->translatedFormat('d F Y H:i') }} WIB
+                        </p>
+                        <a href="{{ route('event.detail', ['slug' => $event->slug]) }}"
                             class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Info Selengkapnya
                             <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true"
@@ -56,7 +61,7 @@
 
         </div>
         <div class="text-center mx-auto">
-            <a href="#"
+            <a href="{{ route('event') }}"
                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Event Lainnya
                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +83,7 @@
                 untuk kamu yang ingin berkarya dengan tenang dan nyaman. Reservasi sekarang untuk menikmati pengalaman
                 berkarya yang seru!</p>
             <div class="flex gap-5">
-                <a href="{{route('reservasi')}}"
+                <a href="{{ route('reservasi') }}"
                     class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Mulai
                     Reservasi</a>
             </div>

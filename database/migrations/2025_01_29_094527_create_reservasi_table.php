@@ -13,17 +13,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservasi', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', 50)->primary();
             $table->unsignedBigInteger('pelanggan_id'); // Foreign key ke tabel pelanggans
             $table->unsignedBigInteger('meja_id'); // Foreign key ke tabel mejas
             $table->unsignedBigInteger('aktivitas_id')->nullable(); // Foreign key ke tabel aktivitas (opsional)
             $table->dateTime('waktu_kedatangan'); // Tanggal & waktu kedatangan
             $table->dateTime('waktu_selesai'); // Tanggal & waktu selesai
             $table->decimal('total', 10, 2); // Total harga reservasi
-            $table->integer('jumlah_orang');// jumlah orang
+            $table->integer('jumlah_orang'); // jumlah orang
             $table->decimal('dp', 10, 2);
             $table->text('snap_token')->nullable();
-            $table->enum('status', ['pending', 'booking', 'paid', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'booking', 'paid', 'cancelled', 'failed'])->default('pending');
             $table->timestamps();
 
             // Tambahkan foreign key

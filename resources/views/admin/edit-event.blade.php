@@ -1,6 +1,6 @@
 @extends('admin.template.master')
 @section('title')
-    Edit Event | {{ config('app.name') }}
+    Tambah Event| {{ config('app.name') }}
 @endsection
 @section('event-active')
     bg-gray-200 text-blue-600 font-semibold
@@ -12,7 +12,8 @@
     <section class="p-4 bg-white rounded-xl lg:p-5 mb-5 shadow-lg">
         <form action="{{ route('admin.update-event', $event->id) }}" method="post" enctype="multipart/form-data">
             @csrf
-            @method('POST')
+            @method('PUT')
+            <!-- Global Error Alert -->
             @if (session('error'))
                 <div id="alert-2"
                     class="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
@@ -63,13 +64,13 @@
                     </button>
                 </div>
             @endif
+
             <!-- Nama Event -->
             <div class="mb-5">
                 <label for="nama" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama
                     Event</label>
-                <input type="text" id="nama" name="nama" value="{{ old('nama', $event->nama) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    required />
+                <input type="text" id="nama" name="nama" value="{{ $event->nama }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 @error('nama')
                     <p class="text-red-500">{{ $message }}</p>
                 @enderror
@@ -79,9 +80,8 @@
             <div class="mb-5">
                 <label for="tanggal_mulai" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal
                     Mulai</label>
-                <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai"
-                    value="{{ old('tanggal_mulai', $event->tanggal_mulai) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai" value="{{ $event->tanggal_mulai }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required />
                 @error('tanggal_mulai')
                     <p class="text-red-500">{{ $message }}</p>
@@ -93,8 +93,8 @@
                 <label for="tanggal_selesai" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal
                     Selesai</label>
                 <input type="datetime-local" id="tanggal_selesai" name="tanggal_selesai"
-                    value="{{ old('tanggal_selesai', $event->tanggal_selesai) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    value="{{ $event->tanggal_selesai }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required />
                 @error('tanggal_selesai')
                     <p class="text-red-500">{{ $message }}</p>
@@ -105,8 +105,8 @@
             <div class="mb-5">
                 <label for="kapasitas"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kapasitas</label>
-                <input type="number" id="kapasitas" name="kapasitas" value="{{ old('kapasitas', $event->kapasitas) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input type="number" id="kapasitas" name="kapasitas" value="{{ $event->kapasitas }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required />
                 @error('kapasitas')
                     <p class="text-red-500">{{ $message }}</p>
@@ -116,8 +116,8 @@
             <!-- Harga -->
             <div class="mb-5">
                 <label for="harga" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Harga</label>
-                <input type="number" id="harga" name="harga" value="{{ old('harga', $event->harga) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input type="number" id="harga" name="harga" value="{{ $event->harga }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required />
                 @error('harga')
                     <p class="text-red-500">{{ $message }}</p>
@@ -127,8 +127,8 @@
             <!-- Lokasi -->
             <div class="mb-5">
                 <label for="lokasi" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
-                <input type="text" id="lokasi" name="lokasi" value="{{ old('lokasi', $event->lokasi) }}"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input type="text" id="lokasi" name="lokasi" value="{{ $event->lokasi }}"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required />
                 @error('lokasi')
                     <p class="text-red-500">{{ $message }}</p>
@@ -139,8 +139,7 @@
             <div class="mb-5">
                 <label for="gambar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar</label>
                 <input type="file" id="gambar" name="gambar"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" />
-                <small class="text-gray-500">Kosongkan jika tidak ingin mengubah gambar.</small>
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 @error('gambar')
                     <p class="text-red-500">{{ $message }}</p>
                 @enderror
@@ -150,8 +149,9 @@
             <div class="mb-5">
                 <label for="deskripsi"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">{{ old('deskripsi', $event->deskripsi) }}</textarea>
+                <textarea
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    id="deskripsi" name="deskripsi">{!! $event->deskripsi !!}</textarea>
                 @error('deskripsi')
                     <p class="text-red-500">{{ $message }}</p>
                 @enderror
@@ -159,8 +159,8 @@
 
             <!-- Submit Button -->
             <button type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
-                Simpan Perubahan
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                Tambah Data
             </button>
 
         </form>
@@ -168,9 +168,51 @@
 @endsection
 @section('addJs')
     <script>
-        ClassicEditor.create(document.querySelector('#deskripsi'))
-            .catch(error => {
-                console.error(error);
-            });
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+
+            upload() {
+                return this.loader.file.then(file => new Promise((resolve, reject) => {
+                    const formData = new FormData();
+                    formData.append('upload', file);
+                    formData.append('_token', document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'));
+
+                    fetch('/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.url) {
+                                resolve({
+                                    default: result.url
+                                });
+                            } else {
+                                reject(result.error || 'Upload failed');
+                            }
+                        })
+                        .catch(error => reject(error));
+                }));
+            }
+
+            abort() {
+                // Called if the upload is aborted.
+            }
+        }
+
+        function CustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
+
+        ClassicEditor
+            .create(document.querySelector('#deskripsi'), {
+                extraPlugins: [CustomUploadAdapterPlugin] // Tambahkan adapter custom
+            })
+            .catch(error => console.error(error));
     </script>
 @endsection

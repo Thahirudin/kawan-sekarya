@@ -12,10 +12,9 @@
     <div class="bg-[url(../../public/img/bg-login.png)] h-screen flex items-center justify-center">
         <div
             class="bg-[url(../../public/img/card-black-login.png)] bg-center h-auto rounded-2xl content-center shadow-lg w-3/4 sm:w-2/3 md:w-1/2 lg:w-2/3 flex overflow-hidden">
-
             <!-- Bagian Logo -->
             <div class="lg:w-1/2 lg:flex justify-center items-center border-r border-gray-300 hidden">
-                <img src="{{asset('img/logoKS.png')}}" alt="Logo" class="w-64">
+                <img src="{{ asset('img/logoKS.png') }}" alt="Logo" class="w-64">
             </div>
 
             <!-- Garis Pembatas dengan Tinggi 2/3 -->
@@ -24,36 +23,79 @@
             <!-- Bagian Form -->
             <div class="lg:w-1/2 p-8 lg:flex flex-col justify-center items-start space-y-4">
                 <h2 class="text-xl font-bold text-[#FFFFFF]">Silahkan Masukan Data Anda</h2>
+                <form action="{{ route('store-pelanggan') }}" method="post">
+                    @csrf
+                    @method('POST')
+                    <input type="text" placeholder="Email" name="email"
+                        class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
+                        value="{{ old('email') }}" required>
+                    <input type="text" placeholder="Nama" name="nama"
+                        class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
+                        value="{{ old('nama') }}" required>
+                    <label for="tanggal_lahir" class="text-white">Tanggal Lahir</label>
+                    <input type="date" placeholder="Tanggal Lahir" name="tanggal_lahir" id="tanggal_lahir"
+                        class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
+                        value="{{ old('tanggal_lahir') }}" required>
+                    <input type="text" placeholder="Nomor HP" name="nohp"
+                        class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
+                        value="{{ old('nohp') }}" required>
+                    <input type="password" placeholder="Password" name="password"
+                        class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
+                        required>
+                    <label for="" class="text-sm text-[#ffffff]">
+                        <input type="checkbox" name="" placeholder="" checked /> data yang saya masukan sudah
+                        benar!
+                    </label>
+                    <button type="submit"
+                        class="w-full py-3 bg-[#0F00E0] text-white font-semibold rounded-md hover:bg-blue-700">
+                        DAFTAR
+                    </button>
 
-                <input type="text" placeholder="Email"
-                    class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <input type="text" placeholder="Nama"
-                    class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <input type="date" placeholder="Tanggal Lahir"
-                    class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <select class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none"
-                    required name="" id="">
-                    <option class="text-black" value="Jenis Kelamin" disabled selected>Jenis Kelamin</option>
-                    <option class="text-black" value="Laki-laki">Laki-laki</option>
-                    <option class="text-black" value="Perempuan">Perempuan</option>
-                </select>
-
-                <input type="text" placeholder="Nomor Telepon"
-                    class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <input type="password" placeholder="Password"
-                    class="w-full p-3 border-b border-gray-300 bg-transparent text-white focus:outline-none" required>
-                <label for="" class="text-sm text-[#ffffff]">
-                    <input type="checkbox" name="" placeholder="" checked /> data yang saya masukan sudah benar!
-                </label>
-
-                <button class="w-full py-3 bg-[#0F00E0] text-white font-semibold rounded-md hover:bg-blue-700">
-                    DAFTAR
-                </button>
-
-                <a href="#" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali Kehalaman Sebelumnya</a>
+                    <a href="{{ route('login') }}" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali Ke
+                        Halaman Login</a>
+                </form>
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Auto close setelah 3 detik
+            });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            // Ambil semua error
+            let errorMessages =
+                `@foreach ($errors->all() as $error) {{ $error }}\n @endforeach`;
+
+            // Tampilkan semua error menggunakan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: errorMessages,
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true
+            });
+        </script>
+    @endif
 </body>
 
 </html>
+

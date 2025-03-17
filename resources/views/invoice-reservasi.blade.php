@@ -100,6 +100,10 @@
                 <p>Reservasi {{ $reservasi->aktivitas->nama }}</p>
             </div>
             <div class="mb-3">
+                <p class="text-lg font-semibold">Meja</p>
+                <p>{{ $reservasi->meja->nama }}</p>
+            </div>
+            <div class="mb-3">
                 <p class="text-lg font-semibold">Waktu Mulai dan Selesai</p>
                 <p>{{ $reservasi->waktu_kedatangan }} - {{ $reservasi->waktu_selesai }}</p>
             </div>
@@ -123,17 +127,25 @@
             @endif
             <div class="mb-3">
                 <p class="text-lg font-semibold">Waktu Pembayaran</p>
-                @if ($reservasi->status === 'pending')
-                    <p>-</p>
-                @else
+                @if ($reservasi->status === 'paid' || $reservasi->status === 'booking')
                     <p>{{ $reservasi->updated_at }}</p>
+                @else
+                    <p>-</p>
                 @endif
             </div>
-            <div class="mb-3">
+            <div class="mb-3 flex gap-5">
                 @if ($reservasi->status === 'pending')
                     <button id="pay-button" class="bg-blue-700 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-800">
                         Bayar
                     </button>
+                    <form action="{{ route('checkout.cancel', ['id' => $reservasi->id]) }}" method="post">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit"
+                            class="bg-red-700 text-white font-bold py-2 px-6 rounded-md hover:bg-red-800">
+                            Batal
+                        </button>
+                    </form>
                 @endif
             </div>
         </div>
@@ -148,13 +160,18 @@
                 // Optional
                 onSuccess: function(result) {
                     /* You may add your own js here, this is just example */
-                    window.location.href = '{{ route('reservasi.booking', $reservasi->id) }}';
+                    window.location.href =
+                        '{{ route('checkout.status') . '/?order_id=' . $reservasi->id }}';
                 },
+                // Optional
                 onPending: function(result) {
-                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                    /* You may add your own js here, this is just example */
                 },
+                // Optional
                 onError: function(result) {
-                    document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                    /* You may add your own js here, this is just example */
+                    window.location.href =
+                        '{{ route('checkout.status') . '/?order_id=' . $reservasi->id }}';
                 }
             });
         };

@@ -175,4 +175,21 @@ class EventController extends Controller
 
         return redirect()->back()->with('success', 'Event Berhasil Ditambahkan!');
     }
+    public function administratorDestroy($id)
+    {
+        // Hapus data event berdasarkan ID
+        $event = Event::findOrFail($id);
+        $event->delete();
+
+        // Hapus juga gambar jika ada
+        if ($event->gambar) {
+            $path = public_path($event->gambar);
+            if (File::exists($path)) {
+                unlink($path);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Event Berhasil Dihapus!');
+
+    }
 }

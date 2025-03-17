@@ -39,11 +39,13 @@
                     LOGIN
                 </button>
 
-                <button class="w-full py-3 bg-[#0F00E0] text-white font-semibold rounded-md hover:bg-blue-700">
+                <a href="{{ route('daftar') }}"
+                    class="w-full py-3 bg-[#0F00E0] text-center text-white font-semibold rounded-md hover:bg-blue-700">
                     DAFTAR
-                </button>
+                </a>
 
-                <a href="#" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali Kehalaman
+                <a href="javascript:history.back()" class="text-sm text-[#ffffff] hover:text-[#cbc5c5] ">Kembali
+                    Kehalaman
                     Sebelumnya</a>
             </form>
         </div>
@@ -64,6 +66,27 @@
                 html: errorMessages, // Menggunakan `html` untuk tampilan list
                 confirmButtonColor: '#d33',
                 confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Auto close setelah 3 detik
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true
             });
         </script>
     @endif

@@ -8,6 +8,7 @@ use App\Models\Reservasi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ReservasiController extends Controller
 {
@@ -36,9 +37,8 @@ class ReservasiController extends Controller
         $pelanggan = Auth::guard('pelanggan')->user();
         if (!$pelanggan) {
             return redirect()->route('login')->with('error', 'Anda harus login sebagai pelanggan untuk melakukan checkout.');
-        }
-        if ($request->jumlah_orang > $meja->kapasitas) {
-            return redirect()->back()->withErrors(['jumlah_orang' => 'Jumlah orang tidak boleh melebihi kapasitas Meja yang tersedia.']);
+        } else if ($request->jumlah_orang > $meja->kapasitas) {
+            return redirect()->back()->withErrors(['jumlah_orang' => 'Jumlah orang melebihi kapasitas meja.']);
         }
         $waktu_kedatangan = Carbon::parse($request->waktu_kedatangan);
         $waktu_selesai = $waktu_kedatangan->copy()->addMinutes($aktivitas->durasi);
@@ -54,12 +54,14 @@ class ReservasiController extends Controller
                     });
             })
             ->exists();
-
-        if ($cek_bentrok) {
+        if ($waktu_kedatangan < Carbon::now()) {
+            return redirect()->back()->withErrors(['waktu_kedatangan' => 'Waktu kedatangan tidak boleh sebelum tanggal dan waktu sekarang.']);
+        } else if ($cek_bentrok) {
             return redirect()->back()->withErrors(['waktu_kedatangan' => 'Meja sudah dipesan pada waktu ini. Silakan pilih waktu lain.']);
         }
         // Simpan data checkout
         $reservasi = Reservasi::create([
+            'id' => 'reservasi-' . Str::uuid(),
             'pelanggan_id' => $pelanggan->id,
             'meja_id' => $request->meja_id,
             'aktivitas_id' => $request->aktivitas_id,
@@ -83,12 +85,20 @@ class ReservasiController extends Controller
 
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand(),
+                'order_id' => $reservasi->id,
                 'gross_amount' => $reservasi->dp,
             ),
             'customer_details' => array(
-                'name' => $pelanggan->nama,
+                'first_name' => $pelanggan->nama,
                 'email' => $pelanggan->email,
+            ),
+            'item_details' => array(
+                array(
+                    'id' => 'reservasi-' . $reservasi->id,
+                    'price' => $reservasi->total,
+                    'quantity' => 1,
+                    'name' => 'reservasi ' . $reservasi->aktivitas->nama,
+                ),
             ),
         );
 

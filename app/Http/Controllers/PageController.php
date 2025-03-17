@@ -40,7 +40,9 @@ class PageController extends Controller
     }
     public function reservasiHistrory()
     {
-        $reservasis = Reservasi::where('pelanggan_id', Auth::guard('pelanggan')->user()->id)->get();
+        $reservasis = Reservasi::where('pelanggan_id', Auth::guard('pelanggan')->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('reservasi-history', compact('reservasis'));
     }
     public function reservasi()
@@ -50,6 +52,9 @@ class PageController extends Controller
     }
     public function reservasiJadwal($id)
     {
+        if (!Auth::guard('pelanggan')->check()) {
+            return redirect()->route('login');
+        }
         $aktivitass = Aktivitas::all();
         $reservasis = Reservasi::where('meja_id', $id)->where('status', 'booking')->get();
         return view('reservasi-jadwal', compact('reservasis', 'id', 'aktivitass'));
@@ -96,5 +101,15 @@ class PageController extends Controller
     {
         $checkouts = Checkout::all();
         return view('admin.checkout-event', compact('checkouts'));
+    }
+    public function administratorDataReservasi()
+    {
+        $checkouts = Reservasi::all();
+        return view('admin.data-reservasi', compact('checkouts'));
+    }
+    public function event()
+    {
+        $events = Event::orderBy('tanggal_mulai', 'desc')->paginate(8);
+        return view('events', compact('events'));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Checkout;
 use App\Models\Event;
+use App\Models\Reservasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -56,8 +57,16 @@ class CheckoutController extends Controller
                 'gross_amount' => $event->harga,
             ),
             'customer_details' => array(
-                'name' => $pelanggan->nama,
+                'first_name' => $pelanggan->nama,
                 'email' => $pelanggan->email,
+            ),
+            'item_details' => array(
+                array(
+                    'id' => 'event-' . $event->id,
+                    'price' => $event->harga,
+                    'quantity' => 1,
+                    'name' => $event->nama,
+                ),
             ),
         );
 
@@ -78,7 +87,10 @@ class CheckoutController extends Controller
     public function updateStatus(Request $request)
     {
         $order_id = $request->query('order_id');
-        $checkout = Checkout::findOrFail($order_id);
+        $checkout = Checkout::where('id', $order_id)->first();
+        if (!$checkout) {
+            $checkout = Reservasi::where('id', $order_id)->first();
+        }
         // Konfigurasi Midtrans
         Config::$serverKey = config('midtrans.serverKey');
         // Periksa apakah tidak login
@@ -94,44 +106,58 @@ class CheckoutController extends Controller
                 // Cek status transaksi, jika berhasil 'settlement'
                 if ($transaction->transaction_status == 'settlement') {
                     // Update status checkout menjadi 'paid'
-                    $checkout->status = 'paid';
-                    $checkout->save();
-
+                    if ($checkout instanceof Checkout) {
+                        $checkout->status = 'paid';
+                        $checkout->save();
+                        return redirect()->route('checkout.show', ['id' => $checkout->id]);
+                    } else {
+                        $checkout->status = 'booking';
+                        $checkout->save();
+                        return redirect()->route('reservasi.show', ['id' => $checkout->id]);
+                    }
                     // Redirect ke halaman checkout untuk melihat detail pembayaran
-                    return redirect()->route('checkout.show', ['id' => $checkout->id]);
                 } else if ($transaction->transaction_status == 'expire') {
-                    // Update status checkout menjadi 'paid'
                     $checkout->status = 'failed';
                     $checkout->save();
-                    // Redirect ke halaman checkout untuk melihat detail pembayaran
-                    return redirect()->route('checkout.show', ['id' => $checkout->id])->with('error', 'Pembayaran Kedaluwarsa');;
+                    if ($checkout instanceof Checkout) {
+                        return redirect()->route('checkout.show', ['id' => $checkout->id])->with('error', 'Pembayaran Kedaluwarsa');
+                    } else {
+                        return redirect()->route('reservasi.show', ['id' => $checkout->id])->with('error', 'Pembayaran Kedaluwarsa');
+                    }
                 } else {
-                    // Jika status transaksi bukan 'settlement'
-                    return redirect()->route('checkout.show', ['id' => $checkout->id])
-                        ->with('error', 'Pembayaran gagal atau belum dikonfirmasi.');
+                    if ($checkout instanceof Checkout) {
+                        return redirect()->route('checkout.show', ['id' => $checkout->id])->with('error', 'Pembayaran gagal atau belum dikonfirmasi.');
+                    } else {
+                        return redirect()->route('reservasi.show', ['id' => $checkout->id])->with('error', 'Pembayaran gagal atau belum dikonfirmasi.');
+                    }
                 }
             } else {
                 // Jika $transaction bukan objek, tangani kesalahan
-                return redirect()->route('checkout.show', ['id' => $checkout->id])
-                    ->with('error', 'Data transaksi tidak valid.');
+                return redirect()->back()->with('error', 'Data transaksi tidak valid.');
             }
         } catch (\Exception $e) {
             // Tangani error jika terjadi kegagalan
-            return redirect()->route('checkout.show', ['id' => $checkout->id])
-                ->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
+            return redirect()->back()->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
         }
     }
     public function failedStatus(Request $request)
     {
 
         try {
-            $order_id = $request->query('order_id');
-            $checkout = Checkout::findOrFail($order_id);
             if (!Auth::guard('pelanggan')->check()) {
                 return redirect()->route('login');
             }
-            $checkout->status = 'failed';
-            $checkout->save();
+            $order_id = $request->query('order_id');
+            if ($checkout = Checkout::where('id', $order_id)->first()) {
+                $checkout->status = 'failed';
+                $checkout->save();
+            } elseif ($reservasi = Reservasi::where('id', $order_id)->first()) {
+                $reservasi->status = 'failed';
+                $reservasi->save();
+            } else {
+                return redirect()->route('checkout.show', ['id' => $order_id])
+                    ->with('error', 'Order tidak ditemukan.');
+            }
         } catch (\Exception $e) {
             // Tangani error jika terjadi kegagalan
             return redirect()->route('checkout.show', ['id' => $checkout->id])
@@ -141,15 +167,18 @@ class CheckoutController extends Controller
     public function cancelStatus($id)
     {
         try {
-            $checkout = Checkout::findOrFail($id);
-            if (!Auth::guard('pelanggan')->check()) {
-                return redirect()->route('login');
+            if ($checkout = Checkout::find($id)) {
+                $checkout->status = 'cancelled';
+                $checkout->save();
+            } elseif ($reservasi = Reservasi::find($id)) {
+                $reservasi->status = 'cancelled';
+                $reservasi->save();
+            } else {
+                return redirect()->back()->with('error', 'Order tidak ditemukan.');
             }
-            $checkout->status = 'cancelled';
-            $checkout->save();
             return redirect()->back()->with('success', 'Order berhasil dibatalkan');
         } catch (\Exception $e) {
-            return redirect()->route('checkout.show', ['id' => $checkout->id])->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
+            return redirect()->back()->with('error', 'Terjadi kesalahan dalam verifikasi pembayaran.');
         }
     }
 }

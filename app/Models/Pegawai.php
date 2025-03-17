@@ -17,6 +17,8 @@ class Pegawai extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = 'pegawais';
+
     protected $fillable = [
         'nama',
         'tanggal_lahir',

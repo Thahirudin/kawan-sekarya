@@ -168,9 +168,51 @@
 @endsection
 @section('addJs')
     <script>
-        ClassicEditor.create(document.querySelector('#deskripsi'))
-            .catch(error => {
-                console.error(error);
-            });
+        class MyUploadAdapter {
+            constructor(loader) {
+                this.loader = loader;
+            }
+
+            upload() {
+                return this.loader.file.then(file => new Promise((resolve, reject) => {
+                    const formData = new FormData();
+                    formData.append('upload', file);
+                    formData.append('_token', document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'));
+
+                    fetch('/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.url) {
+                                resolve({
+                                    default: result.url
+                                });
+                            } else {
+                                reject(result.error || 'Upload failed');
+                            }
+                        })
+                        .catch(error => reject(error));
+                }));
+            }
+
+            abort() {
+                // Called if the upload is aborted.
+            }
+        }
+
+        function CustomUploadAdapterPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new MyUploadAdapter(loader);
+            };
+        }
+
+        ClassicEditor
+            .create(document.querySelector('#deskripsi'), {
+                extraPlugins: [CustomUploadAdapterPlugin] // Tambahkan adapter custom
+            })
+            .catch(error => console.error(error));
     </script>
 @endsection

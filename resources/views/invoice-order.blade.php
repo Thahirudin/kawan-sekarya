@@ -112,10 +112,10 @@
             </div>
             <div class="mb-3">
                 <p class="text-lg font-semibold">Waktu Pembayaran</p>
-                @if ($checkout->status === 'pending')
-                    <p>-</p>
-                @else
+                @if ($checkout->status === 'paid')
                     <p>{{ $checkout->updated_at }}</p>
+                @else
+                    <p>-</p>
                 @endif
             </div>
             <div class="mb-3 flex gap-5">
@@ -126,7 +126,8 @@
                     <form action="{{ route('checkout.cancel', ['id' => $checkout->id]) }}" method="post">
                         @csrf
                         @method('PUT')
-                        <button type="submit" class="bg-red-700 text-white font-bold py-2 px-6 rounded-md hover:bg-red-800">
+                        <button type="submit"
+                            class="bg-red-700 text-white font-bold py-2 px-6 rounded-md hover:bg-red-800">
                             Batal
                         </button>
                     </form>
@@ -147,19 +148,15 @@
                 onSuccess: function(result) {
                     /* You may add your own js here, this is just example */
                     window.location.href =
-                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
+                        '{{ route('checkout.status') . '/?order_id=' . $checkout->id }}';
                 },
                 // Optional
-                onPending: function(result) {
-                    /* You may add your own js here, this is just example */
-                    window.location.href =
-                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
-                },
+                onPending: function(result) {},
                 // Optional
                 onError: function(result) {
                     /* You may add your own js here, this is just example */
                     window.location.href =
-                        '{{ route('checkout.success') . '/?order_id=' . $checkout->id }}';
+                        '{{ route('checkout.status') . '/?order_id=' . $checkout->id }}';
                 }
             });
         };

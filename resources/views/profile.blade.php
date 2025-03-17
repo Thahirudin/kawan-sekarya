@@ -1,4 +1,7 @@
 @extends('layout.master')
+@section('nav-profil')
+text-blue-700
+@endsection
 @section('content')
     <!-- sidebar mobile -->
     <div id="accordion-collapse" data-accordion="collapse" class="lg:hidden bg-white">
@@ -83,36 +86,116 @@
 
         <!-- Main Content -->
         <div class="flex-1 bg-white p-6 rounded-md shadow-md">
-            <div>
-                <!-- Profile Header -->
-                <div class="flex items-center space-x-6 mb-8">
-                    <img src="{{ asset(Auth::guard('pelanggan')->user()->gambar) }}"
-                        class="w-36 h-36 bg-cover rounded-full bg-" alt="">
-                    <input type="file" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700"></input>
+            <form action="{{ route('update-profil') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div>
+                    <!-- Profile Header -->
+                    <div class="flex items-center space-x-6 mb-8">
+                        <img id="profileImage" src="{{ asset(Auth::guard('pelanggan')->user()->gambar) }}"
+                            class="w-36 h-36 bg-cover rounded-full" alt="">
+                        <input type="file" class="bg-gray-200 px-4 py-2 rounded-md text-gray-700"
+                            onchange="previewImage(event)" name="gambar">
+                    </div>
+                    <!-- Profile Info -->
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <p>Email</p>
+                        <div class="flex items-center gap-5">
+                            <span>:</span>
+                            <input type="text"
+                                class="px-4 py-2 rounded-md text-gray-700 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ Auth::guard('pelanggan')->user()->email }}" name="email">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <p>Nama</p>
+                        <div class="flex items-center gap-5">
+                            <span>:</span>
+                            <input type="text"
+                                class="px-4 py-2 rounded-md text-gray-700 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ Auth::guard('pelanggan')->user()->nama }}" name="nama">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <p>Tanggal Lahir</p>
+                        <div class="flex items-center gap-5">
+                            <span>:</span>
+                            <input type="date"
+                                class="px-4 py-2 rounded-md text-gray-700 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ date('Y-m-d', strtotime(Auth::guard('pelanggan')->user()->tanggal_lahir)) }}" name="tanggal_lahir">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <p>Nomor HP</p>
+                        <div class="flex items-center gap-5">
+                            <span>:</span>
+                            <input type="text"
+                                class="px-4 py-2 rounded-md text-gray-700 w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ Auth::guard('pelanggan')->user()->nohp }}" name="nohp">
+                        </div>
+                    </div>
+                    <!-- Change Password Section -->
+                    <div class="mt-6">
+                        <label class="block mb-2 text-sm font-medium text-gray-700">Change Password</label>
+                        <input type="password" class="w-full p-2 border border-gray-300 rounded-md"
+                            placeholder="**********" name="password">
+                    </div>
                 </div>
-
-                <!-- Profile Info -->
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <p>Email</p>
-                    <p class="font-medium text-gray-700">: {{ Auth::guard('pelanggan')->user()->email }}</p>
-                    <p>Nama</p>
-                    <p class="font-medium text-gray-700">: {{ Auth::guard('pelanggan')->user()->nama }}</p>
-                    <p>Tanggal Lahir</p>
-                    <p class="font-medium text-gray-700">: {{ Auth::guard('pelanggan')->user()->tanggal_lahir }}</p>
+                <!-- Action Buttons -->
+                <div class="mt-6 flex space-x-4">
+                    <button type="submit" class=" bg-blue-600 text-white px-6 py-2 rounded-md">Save</button>
                 </div>
-
-                <!-- Change Password Section -->
-                <div class="mt-6">
-                    <label class="block mb-2 text-sm font-medium text-gray-700">Change Password</label>
-                    <input type="password" class="w-full p-2 border border-gray-300 rounded-md" placeholder="**********">
-                </div>
-            </div>
-
-
-            <!-- Action Buttons -->
-            <div class="mt-6 flex space-x-4">
-                <button class=" bg-blue-600 text-white px-6 py-2 rounded-md">Save</button>
-            </div>
+            </form>
         </div>
     </div>
+@endsection
+@section('addJs')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Auto close setelah 3 detik
+            });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            // Ambil semua error
+            let errorMessages =
+                `@foreach ($errors->all() as $error) {{ $error }}\n @endforeach`;
+
+            // Tampilkan semua error menggunakan SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: errorMessages,
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                showConfirmButton: true
+            });
+        </script>
+    @endif
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('profileImage');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
 @endsection

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('pelanggan_id'); // Foreign key ke tabel pelanggans
             $table->unsignedBigInteger('event_id'); // Foreign key ke tabel events
             $table->decimal('total', 10, 2); // Total pembayaran dalam format decimal
-            $table->enum('status', ['pending', 'paid', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'paid', 'cancelled', 'failed'])->default('pending');
             $table->text('snap_token')->nullable();
             $table->timestamps();
 

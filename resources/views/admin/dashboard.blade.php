@@ -23,6 +23,9 @@
             <p>Total Checkout Selesai</p>
             <p class="text-[40px] text-center">{{ $totalCheckout }}</p>
         </div>
+
+    </section>
+    <section class="mb-5">
         <div class="mb-5 p-4 md:mb-0 bg-white rounded-xl lg:p-5 font-bold  shadow-lg">
             <p>Total Pemasukan</p>
             <p class="text-[40px] text-center">Rp{{ number_format($totalPemasukan, 0, ',', '.') }}</p>
@@ -70,7 +73,7 @@
             <p class="text-xl font-bold">Data Reservasi</p>
         </div>
         <div class="relative overflow-x-auto">
-            <table id="example" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <table id="example2" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead>
                     <tr>
                         <th>Nama Pelanggan</th>
@@ -79,9 +82,37 @@
                         <th>Kapasitas</th>
                         <th>Waktu Kedatangan</th>
                         <th>Waktu Selesai</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($reservasis as $reservasi)
+                        <tr>
+                            <td>{{ $reservasi->pelanggan->nama }}</td>
+                            <td>{{ $reservasi->meja->nama }}</td>
+                            <td>{{ $reservasi->aktivitas->nama }}</td>
+                            <td>{{ $reservasi->meja->kapasitas }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reservasi->waktu_kedatangan)->translatedFormat('d F Y H:i') }}
+                                WIB</td>
+                            <td>{{ \Carbon\Carbon::parse($reservasi->waktu_selesai)->translatedFormat('d F Y H:i') }} WIB
+                            </td>
+                            <td>
+                                <div
+                                    class="px-2 py-1 text-center rounded-full text-white {{ $reservasi->status == 'failed' || $reservasi->status == 'cancelled'
+                                        ? 'bg-red-500'
+                                        : ($reservasi->status == 'pending'
+                                            ? 'bg-yellow-500'
+                                            : ($reservasi->status == 'paid'
+                                                ? 'bg-green-700'
+                                                : ($reservasi->status == 'booking'
+                                                    ? 'bg-green-500'
+                                                    : ''))) }}">
+                                    {{ $reservasi->status }}
+                                </div>
+
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -94,6 +125,16 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable({
+                responsive: true,
+                searching: true,
+                ordering: true,
+                pageLength: 5, // Menampilkan 5 data per halaman secara default,
+                lengthMenu: [
+                    [5, 10, 25, 50, -1],
+                    [5, 10, 25, 50, "Semua"]
+                ]
+            });
+            $('#example2').DataTable({
                 responsive: true,
                 searching: true,
                 ordering: true,
